@@ -273,10 +273,10 @@ class InferenceEngine(object):
         request.get_firmware_info.SetInParent()
         try:
             info = self._communicate(request).firmware_info
-            return (info.major_version, info.minor_version)
+            return info.major_version, info.minor_version
         except InferenceException:
             # Request is not supported by firmware, default to 1.0
-            return (1, 0)
+            return 1, 0
 
     def image_inference(self, model_name, image, params=None):
         """Runs inference on image using model (identified by model_name).

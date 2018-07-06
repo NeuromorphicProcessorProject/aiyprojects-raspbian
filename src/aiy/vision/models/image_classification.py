@@ -33,6 +33,10 @@ _OUTPUT_TENSOR_NAME_MAP = {
     MOBILENET: 'MobilenetV1/Predictions/Softmax',
     SQUEEZENET: 'Prediction',
 }
+_FEATURE_TENSOR_NAME_MAP = {
+    MOBILENET: 'MobilenetV1/FC',
+    SQUEEZENET: 'FC',
+}
 
 
 def model(model_type=MOBILENET):
@@ -73,3 +77,14 @@ def get_classes(result, max_num_objects=None, object_prob_threshold=0.0):
     pairs = sorted(pairs, key=lambda pair: pair[1], reverse=True)
     pairs = pairs[0:max_num_objects]
     return [('/'.join(CLASSES[index]), prob) for index, prob in pairs]
+
+
+def get_output_features(result):
+    """Get the final layer of the feature extractor."""
+    assert len(result.tensors) == 1
+    tensor_name = _FEATURE_TENSOR_NAME_MAP[result.model_name]
+    tensor = result.tensors[tensor_name]
+    features, shape = tensor.data, tensor.shape
+    assert (shape.batch, shape.height, shape.width, shape.depth) == (1, 1, 1, 1001)
+
+    return features

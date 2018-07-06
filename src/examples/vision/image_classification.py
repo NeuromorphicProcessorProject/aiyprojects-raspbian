@@ -14,6 +14,8 @@
 # limitations under the License.
 """Image classification library demo."""
 
+import os
+import numpy as np
 import argparse
 import io
 import sys
@@ -41,10 +43,13 @@ def main():
         image = Image.open(
             io.BytesIO(sys.stdin.buffer.read())
             if args.input == '-' else args.input)
-        classes = image_classification.get_classes(
-            inference.run(image), max_num_objects=5, object_prob_threshold=0.1)
+        result = inference.run(image)
+        classes = image_classification.get_classes(result, max_num_objects=5, object_prob_threshold=0.1)
+        features = image_classification.get_output_features(result)
         for i, (label, score) in enumerate(classes):
             print('Result %d: %s (prob=%f)' % (i, label, score))
+        print(features)
+        np.savez_compressed(os.path.join('~', 'Downloads', 'features'), features)
 
 
 if __name__ == '__main__':

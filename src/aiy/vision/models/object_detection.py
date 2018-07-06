@@ -143,7 +143,7 @@ def _decode_box_encoding(box_encoding, anchor):
     xmax = _clamp(xcenter + width / 2)
     ymax = _clamp(ycenter + height / 2)
 
-    return (xmin, ymin, xmax, ymax)
+    return xmin, ymin, xmax, ymax
 
 
 def _area(box):
